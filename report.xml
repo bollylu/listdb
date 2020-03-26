@@ -1,0 +1,506 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<?xml-stylesheet type="text/xsl" href="report.xsl"?>
+<root>
+  <jobs>
+    <job>
+      <server>beite0merdev03</server>
+      <category>System</category>
+      <name>Backup Ops Databases</name>
+      <desc>This job will backup all Operational databases on this server.</desc>
+      <owner>sa</owner>
+    </job>
+    <job>
+      <server>beite0merdev03</server>
+      <category>System</category>
+      <name>Backup System Databases</name>
+      <desc>No description available.</desc>
+      <owner>sa</owner>
+    </job>
+    <job>
+      <server>beite0merdev03</server>
+      <category>Database Maintenance</category>
+      <name>CLEANUP_UIPState</name>
+      <desc>No description available.</desc>
+      <owner>sa</owner>
+    </job>
+    <job>
+      <server>beite0merdev03</server>
+      <category>Business - 1</category>
+      <name>CMN_J_CalculateActualDetails</name>
+      <desc>No description available.</desc>
+      <owner>EU\BEGilbeK</owner>
+    </job>
+    <job>
+      <server>beite0merdev03</server>
+      <category>[Uncategorized (Local)]</category>
+      <name>CMN_J_CustomerIntake</name>
+      <desc>No description available.</desc>
+      <owner>sa</owner>
+    </job>
+    <job>
+      <server>beite0merdev03</server>
+      <category>Business - 2</category>
+      <name>CPMA_Batch</name>
+      <desc>No description available.</desc>
+      <owner>sa</owner>
+    </job>
+    <job>
+      <server>beite0merdev03</server>
+      <category>Business - 1</category>
+      <name>CPMA_J_DailySchedule</name>
+      <desc>Performs general CPMA actions that need to be executed during night.</desc>
+      <owner>sa</owner>
+    </job>
+    <job>
+      <server>beite0merdev03</server>
+      <category>[Uncategorized (Local)]</category>
+      <name>CPMA_J_ExportToExcel</name>
+      <desc>Exports CPMA Priceblocks to Excel (.csv file with bcp out).</desc>
+      <owner>sa</owner>
+    </job>
+    <job>
+      <server>beite0merdev03</server>
+      <category>[Uncategorized (Local)]</category>
+      <name>CPMA_UploadPricesSapBW</name>
+      <desc>No description available.</desc>
+      <owner>sa</owner>
+    </job>
+    <job>
+      <server>beite0merdev03</server>
+      <category>[Uncategorized (Local)]</category>
+      <name>CPMA_UploadSapBWActual2</name>
+      <desc>No description available.</desc>
+      <owner>sa</owner>
+    </job>
+    <job>
+      <server>beite0merdev03</server>
+      <category>ETL - 2</category>
+      <name>DTS_UploadToCar</name>
+      <desc>No description available.</desc>
+      <owner>sa</owner>
+    </job>
+    <job>
+      <server>beite0merdev03</server>
+      <category>[Uncategorized (Local)]</category>
+      <name>DW_ReloadCube_SCM_ITE_Agg_Time</name>
+      <desc>No description available.</desc>
+      <owner>sa</owner>
+    </job>
+    <job>
+      <server>beite0merdev03</server>
+      <category>[Uncategorized (Local)]</category>
+      <name>DW_ReloadCube_SCM_ITE_GLOBAL</name>
+      <desc>No description available.</desc>
+      <owner>sa</owner>
+    </job>
+    <job>
+      <server>beite0merdev03</server>
+      <category>[Uncategorized (Local)]</category>
+      <name>DW_ReloadCube_SCM_ITE_OOGLOBAL</name>
+      <desc>No description available.</desc>
+      <owner>sa</owner>
+    </job>
+    <job>
+      <server>beite0merdev03</server>
+      <category>[Uncategorized (Local)]</category>
+      <name>E-ASCA - Update Infinit and exec CreateMostRecentSellIn</name>
+      <desc>No description available.</desc>
+      <owner>sa</owner>
+    </job>
+    <job>
+      <server>beite0merdev03</server>
+      <category>[Uncategorized (Local)]</category>
+      <name>E-ASCA_Update and send report</name>
+      <desc>No description available.</desc>
+      <owner>sa</owner>
+    </job>
+    <job>
+      <server>beite0merdev03</server>
+      <category>[Uncategorized (Local)]</category>
+      <name>EC Full Import Control</name>
+      <desc>Execute package: EC Full Import Control</desc>
+      <owner>EU\besaite0srv</owner>
+    </job>
+    <job>
+      <server>beite0merdev03</server>
+      <category>[Uncategorized (Local)]</category>
+      <name>eDR_OO_J_Maintenance_CloseReopenedWeeks</name>
+      <desc>It would be nice, if we could automatically clean/close the re-opened weeks (all weeks before N-2, N being current calendar week) for instance every Friday.
+</desc>
+      <owner>eu\beite_saedr</owner>
+    </job>
+    <job>
+      <server>beite0merdev03</server>
+      <category>Business - 2</category>
+      <name>eDR_OO_J_Maintenance_GenerationFilter</name>
+      <desc>delete records from reportedmm</desc>
+      <owner>eu\beite_saedr</owner>
+    </job>
+    <job>
+      <server>beite0merdev03</server>
+      <category>Reports - 2</category>
+      <name>eDR_OO_J_TrendReports</name>
+      <desc>Generates trend reports for eDR</desc>
+      <owner>BEITE0MERDEV03\beite_saedr</owner>
+    </job>
+    <job>
+      <server>beite0merdev03</server>
+      <category>Reports - 1</category>
+      <name>eDR_OO_J_WeeklyReports</name>
+      <desc>For every entry in the table, an excel report will be generated.</desc>
+      <owner>eu\beite_saedr</owner>
+    </job>
+    <job>
+      <server>beite0merdev03</server>
+      <category>ETL - 3</category>
+      <name>EMC_Import_DataAll</name>
+      <desc>Execute package: EMC_Import_DataAll</desc>
+      <owner>eu\bejammeg</owner>
+    </job>
+    <job>
+      <server>beite0merdev03</server>
+      <category>ETL - 3</category>
+      <name>EMC_Import_DataAll2</name>
+      <desc>Execute package: EMC_Import_DataAll2</desc>
+      <owner>eu\bejammeg</owner>
+    </job>
+    <job>
+      <server>beite0merdev03</server>
+      <category>[Uncategorized (Local)]</category>
+      <name>ETM_CDTransfer</name>
+      <desc>No description available.</desc>
+      <owner>sa</owner>
+    </job>
+    <job>
+      <server>beite0merdev03</server>
+      <category>Business - 3</category>
+      <name>ETM_CheckActiveProcesses</name>
+      <desc>No description available.</desc>
+      <owner>sa</owner>
+    </job>
+    <job>
+      <server>beite0merdev03</server>
+      <category>[Uncategorized (Local)]</category>
+      <name>FWK_SEC_Export_Data_and_Structure</name>
+      <desc>Execute package: FWK_SEC_Export_Data_and_Structure</desc>
+      <owner>sa</owner>
+    </job>
+    <job>
+      <server>beite0merdev03</server>
+      <category>Database Maintenance</category>
+      <name>Integrity Checks Job for DB Maintenance Plan 'DBMaintenancePlanAllDatabases'</name>
+      <desc>No description available.</desc>
+      <owner>EU\BEWouteL</owner>
+    </job>
+    <job>
+      <server>beite0merdev03</server>
+      <category>[Uncategorized (Local)]</category>
+      <name>INV_I_IMPORT_INVOICES</name>
+      <desc>No description available.</desc>
+      <owner>EU\BEVandeB</owner>
+    </job>
+    <job>
+      <server>beite0merdev03</server>
+      <category>[Uncategorized (Local)]</category>
+      <name>IQ2_mailing</name>
+      <desc>Job that runs at 19.00 every day to go trough the IQ2_case to send emails...</desc>
+      <owner>EU\BEStormP</owner>
+    </job>
+    <job>
+      <server>beite0merdev03</server>
+      <category>Obsolete - do not delete</category>
+      <name>log size - Ghis</name>
+      <desc>No description available.</desc>
+      <owner>sa</owner>
+    </job>
+    <job>
+      <server>beite0merdev03</server>
+      <category>[Uncategorized (Local)]</category>
+      <name>MNC_Warehouse_FTPupload</name>
+      <desc>upload Vdr_data, customer and material flat files</desc>
+      <owner>sa</owner>
+    </job>
+    <job>
+      <server>beite0merdev03</server>
+      <category>[Uncategorized (Local)]</category>
+      <name>MOQ Calculation</name>
+      <desc>Execute package: MOQ_SAP_BW_TMP
+Execute package: MOQ_WFL</desc>
+      <owner>EU\BEDANVIO</owner>
+    </job>
+    <job>
+      <server>beite0merdev03</server>
+      <category>[Uncategorized (Local)]</category>
+      <name>MOQ Calculation</name>
+      <desc>Execute package: MOQ_SAP_BW_TMP
+Execute package: MOQ_WFL</desc>
+      <owner>EU\BEDANVIO</owner>
+    </job>
+    <job>
+      <server>beite0merdev03</server>
+      <category>Business - 3</category>
+      <name>NPS_j_Remove old log entries</name>
+      <desc>This job will erase entries of the salesstatus log table. This way the log will not contain really old data.</desc>
+      <owner>sa</owner>
+    </job>
+    <job>
+      <server>beite0merdev03</server>
+      <category>Database Maintenance</category>
+      <name>Optimizations Job for DB Maintenance Plan 'DBMaintenancePlanAllDatabases'</name>
+      <desc>No description available.</desc>
+      <owner>EU\BEWouteL</owner>
+    </job>
+    <job>
+      <server>beite0merdev03</server>
+      <category>Business - 2</category>
+      <name>PET_EMAIL_CheckTimeSheet_Level1_PETS</name>
+      <desc>No description available.</desc>
+      <owner>eu\beHamdaK</owner>
+    </job>
+    <job>
+      <server>beite0merdev03</server>
+      <category>Business - 2</category>
+      <name>PET_EMAIL_CheckTimeSheet_Level2_PETS</name>
+      <desc>No description available.</desc>
+      <owner>sa</owner>
+    </job>
+    <job>
+      <server>beite0merdev03</server>
+      <category>Business - 2</category>
+      <name>PET_EMAIL_CheckTimeSheet_Level3_PETS</name>
+      <desc>No description available.</desc>
+      <owner>sa</owner>
+    </job>
+    <job>
+      <server>beite0merdev03</server>
+      <category>[Uncategorized (Local)]</category>
+      <name>PET_EmpPrjDist</name>
+      <desc>No description available.</desc>
+      <owner>sa</owner>
+    </job>
+    <job>
+      <server>beite0merdev03</server>
+      <category>[Uncategorized (Local)]</category>
+      <name>PET_MonthlyConsolidationStart</name>
+      <desc>No description available.</desc>
+      <owner>sa</owner>
+    </job>
+    <job>
+      <server>beite0merdev03</server>
+      <category>Business - 2</category>
+      <name>PFT_IndexReset</name>
+      <desc>Reset indexes of dimension tables</desc>
+      <owner>sa</owner>
+    </job>
+    <job>
+      <server>beite0merdev03</server>
+      <category>Business - 2</category>
+      <name>SAP_GEN_J_BatchOutputMaterialFiles</name>
+      <desc>Execute package: SAP: Batch Output Material Files</desc>
+      <owner>sa</owner>
+    </job>
+    <job>
+      <server>beite0merdev03</server>
+      <category>ETL - 1</category>
+      <name>SAP_MD_Customer_Product_Upload</name>
+      <desc>No description available.</desc>
+      <owner>sa</owner>
+    </job>
+    <job>
+      <server>beite0merdev03</server>
+      <category>ETL - 1</category>
+      <name>SAP_MD_DailyInventory_Upload</name>
+      <desc>This job will upload on a daily basis Inventory Data from SAPBW.</desc>
+      <owner>sa</owner>
+    </job>
+    <job>
+      <server>beite0merdev03</server>
+      <category>ETL - 1</category>
+      <name>SAP_MD_nonPhoenix_Upload</name>
+      <desc>No description available.</desc>
+      <owner>eu\beeylenh</owner>
+    </job>
+    <job>
+      <server>beite0merdev03</server>
+      <category>ETL - 2</category>
+      <name>SAP_MD_Vendor_Upload</name>
+      <desc>No description available.</desc>
+      <owner>EU\BEite_sasql</owner>
+    </job>
+    <job>
+      <server>beite0merdev03</server>
+      <category>ETL - 3</category>
+      <name>SAP_SD_S923_Upload</name>
+      <desc>No description available.</desc>
+      <owner>sa</owner>
+    </job>
+    <job>
+      <server>beite0merdev03</server>
+      <category>ETL - 3</category>
+      <name>SAP_SD_SalesOrder_Deliveries_Upload</name>
+      <desc>Upload of Sales Order and Deliveries Transactional Data From SAP</desc>
+      <owner>sa</owner>
+    </job>
+    <job>
+      <server>beite0merdev03</server>
+      <category>ETL - 1</category>
+      <name>SCM_J_LoadSalesStatusUpdateActuals</name>
+      <desc>Upload of Sales Order and Deliveries Transactional Data From SAP.  It uploads all the files for that day.  It also reloads SCM Actual tables and the Cubes on beite0merdev03.</desc>
+      <owner>sa</owner>
+    </job>
+    <job>
+      <server>beite0merdev03</server>
+      <category>Business - 2</category>
+      <name>SCM_J_OONightlyBatch</name>
+      <desc>No description available.</desc>
+      <owner>sa</owner>
+    </job>
+    <job>
+      <server>beite0merdev03</server>
+      <category>Business - 2</category>
+      <name>SCM_RollingQuota</name>
+      <desc>take the unconsumed quota, add it up to correct MaxAva field and save a version in the history table in order to correctly recreate the past when a user selects a previous input week</desc>
+      <owner>sa</owner>
+    </job>
+    <job>
+      <server>beite0merdev03</server>
+      <category>[Uncategorized (Local)]</category>
+      <name>SCM_VP_JobListener</name>
+      <desc>No description available.</desc>
+      <owner>sa</owner>
+    </job>
+    <job>
+      <server>beite0merdev03</server>
+      <category>Database Maintenance</category>
+      <name>SLS DB Backup Job for DB Maintenance Plan 'DB Maintenance Backup Ops Databases'</name>
+      <desc>No description available.</desc>
+      <owner>sa</owner>
+    </job>
+    <job>
+      <server>beite0merdev03</server>
+      <category>[Uncategorized (Local)]</category>
+      <name>STC_BW_CDE_SELLIN_PM</name>
+      <desc>Execute package: STC_BW_CDE_SELLIN_PM</desc>
+      <owner>sa</owner>
+    </job>
+    <job>
+      <server>beite0merdev03</server>
+      <category>[Uncategorized (Local)]</category>
+      <name>STC_J_LOAD_EDR_DATA</name>
+      <desc>No description available.</desc>
+      <owner>sa</owner>
+    </job>
+    <job>
+      <server>beite0merdev03</server>
+      <category>Business - 2</category>
+      <name>STC_J_MailReminder</name>
+      <desc>No description available.</desc>
+      <owner>sa</owner>
+    </job>
+    <job>
+      <server>beite0merdev03</server>
+      <category>Business - 2</category>
+      <name>STC_J_UnlinkedMailReminder</name>
+      <desc>No description available.</desc>
+      <owner>sa</owner>
+    </job>
+    <job>
+      <server>beite0merdev03</server>
+      <category>Business - 2</category>
+      <name>STC_LOAD_VDR_DATA</name>
+      <desc>No description available.</desc>
+      <owner>sa</owner>
+    </job>
+    <job>
+      <server>beite0merdev03</server>
+      <category>[Uncategorized (Local)]</category>
+      <name>SVN_Actuals</name>
+      <desc>No description available.</desc>
+      <owner>EU\beevensp</owner>
+    </job>
+    <job>
+      <server>beite0merdev03</server>
+      <category>System</category>
+      <name>SYS_J_Monitor infinit log size</name>
+      <desc>No description available.</desc>
+      <owner>sa</owner>
+    </job>
+    <job>
+      <server>beite0merdev03</server>
+      <category>System</category>
+      <name>SYS_J_Monitoring</name>
+      <desc>No description available.</desc>
+      <owner>sa</owner>
+    </job>
+    <job>
+      <server>beite0merdev03</server>
+      <category>System</category>
+      <name>SYS_J_TransferObjects</name>
+      <desc>No description available.</desc>
+      <owner>sa</owner>
+    </job>
+    <job>
+      <server>beite0merdev03</server>
+      <category>Test - Safe to delete</category>
+      <name>Test BWCorrection</name>
+      <desc>No description available.</desc>
+      <owner>sa</owner>
+    </job>
+    <job>
+      <server>beite0merdev03</server>
+      <category>Test - Safe to delete</category>
+      <name>test_asca</name>
+      <desc>Execute package: test_asca</desc>
+      <owner>sa</owner>
+    </job>
+    <job>
+      <server>beite0merdev03</server>
+      <category>System</category>
+      <name>TestMailAfterFailure</name>
+      <desc>No description available.</desc>
+      <owner>sa</owner>
+    </job>
+    <job>
+      <server>beite0merdev03</server>
+      <category>[Uncategorized (Local)]</category>
+      <name>Update eSCM Work Tables</name>
+      <desc>daily job to update the eSCM working tables.  In production, this job should run after the sellin download</desc>
+      <owner>sa</owner>
+    </job>
+    <job>
+      <server>beite0merdev03</server>
+      <category>ETL - 2</category>
+      <name>UPL SAP BW Tranactional Data</name>
+      <desc>No description available.</desc>
+      <owner>eu\beasselj</owner>
+    </job>
+    <job>
+      <server>beite0merdev03</server>
+      <category>[Uncategorized (Local)]</category>
+      <name>UPLOAD REP &amp; AIB INVOICES</name>
+      <desc>No description available.</desc>
+      <owner>eu\beasselj</owner>
+    </job>
+    <job>
+      <server>beite0merdev03</server>
+      <category>[Uncategorized (Local)]</category>
+      <name>Upload SAPBW Accounting Data</name>
+      <desc>This job will upload the SAP BW Accountin data into the PHX tables</desc>
+      <owner>eu\beasselj</owner>
+    </job>
+    <job>
+      <server>beite0merdev03</server>
+      <category>Business - 2</category>
+      <name>Upload SAPR3 Serial Number Data</name>
+      <desc>No description available.</desc>
+      <owner>eu\beasselj</owner>
+    </job>
+    <job>
+      <server>beite0merdev03</server>
+      <category>[Uncategorized (Local)]</category>
+      <name>VP_PrepareDataSources</name>
+      <desc>Prepares Value Planning data source data (Actuals from SAP, forecast from eSCM, prices from CPMA)</desc>
+      <owner>EU\beevensm</owner>
+    </job>
+  </jobs>
+</root>
