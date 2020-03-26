@@ -73,6 +73,10 @@ namespace listdb {
 
       SplitArgs Args = new SplitArgs(args);
 
+      if (Args.IsDefined("?") || Args.IsDefined("help")) {
+        Usage();
+      }
+
       int JobHistoryDays;
 
       #region Initialize parameters
@@ -91,8 +95,8 @@ namespace listdb {
       bool ParamUserOnly = !Args.IsDefined("system");
 
       bool ParamWithDatabases = Args.IsDefined("databases");
-      string ParamDatabaseDetails = Args.GetValue("databases", "list");
-      ParamDatabaseDetails = ParamDatabaseDetails == "" ? "list" : ParamDatabaseDetails;
+
+      EDocumentDatabasesType ParamDatabaseType = (EDocumentDatabasesType)Enum.Parse(typeof(EDocumentDatabasesType), Args.GetValue("databases", "list"), true);
 
       bool WithSP = Args.IsDefined("sp");
       string SpDetails = Args.GetValue("sp", "list");
@@ -222,7 +226,7 @@ namespace listdb {
       VerboseLogger.Log("");
 
       if (ParamWithDatabases) {
-        VerboseLogger.Log($"# Displays the databases, mode {ParamDatabaseDetails}");
+        VerboseLogger.Log($"# Displays the databases, mode {ParamDatabaseType.ToString()}");
       }
       if (ParamDbList.Count == 0) {
         VerboseLogger.Log("# No restrictions on databases");
@@ -320,163 +324,169 @@ namespace listdb {
           if (WithUsers) {
             Documenter.DocumentUsers(ParamUsersType);
           }
-
           #endregion
 
+          if (ParamWithDatabases) {
+            TSelectionCriterias DatabaseCriterias = new TSelectionCriterias();
+            DatabaseCriterias.Filter.AddRange(ParamDbList);
+            DatabaseCriterias.SelectUserData = ParamUserOnly;
+            DatabaseCriterias.SelectSystemData = !ParamUserOnly;
+            Documenter.DocumentDatabases(ParamDatabaseType, DatabaseCriterias);
+          }
+
           if (ParamWithDatabases || WithTables || WithViews || WithTriggers || WithUsers || WithSP || WithFunctions || WithUDT) {
-            DatabaseCollection oDBs = SqlServer.Databases;
-            foreach (Database DatabaseItem in oDBs) {
+            foreach (Database DatabaseItem in SqlServer.Databases) {
               if ((ParamDbList.Count == 0) || (ParamDbList.Contains(DatabaseItem.Name.ToLower()))) {
 
                 #region Databases
                 if (ParamWithDatabases) {
-                  if (!ParamUserOnly || (ParamUserOnly && !DatabaseItem.IsSystemObject)) {
-                    VerboseLogger.Log(string.Format("accessing database {0}", DatabaseItem.Name));
-                    switch (ParamDatabaseDetails) {
-                      case "stats":
-                        #region stats
-                        Console.Write("-- {0,-40}", DatabaseItem.Name.TrimEnd().PadRight(40, '.'));
-                        Console.Write(" {0,20}", DatabaseItem.Size.ToString("#,##0.00 MB"));
-                        Console.Write(" {0,25}", DatabaseItem.SpaceAvailable.ToString("#,##0.00 MB free"));
-                        Console.Write(" (D={0,20})", DatabaseItem.DataSpaceUsage.ToString("#,##0 KB"));
-                        Console.Write(" (I={0,20})", DatabaseItem.IndexSpaceUsage.ToString("#,##0 KB"));
-                        Console.Write(" {0,4} users", DatabaseItem.Users.Count);
-                        DatabaseOptions oDBO;
-                        try {
-                          oDBO = DatabaseItem.DatabaseOptions;
-                          Console.Write(" | {0}", SqlUtils.RecoveryModelText(oDBO.RecoveryModel));
-                        } catch {
-                          Console.Write(" | only for 2000+");
-                        }
-                        Console.WriteLine();
-                        break;
-                      #endregion
-                      case "physical":
-                        #region physical
-                        VerboseLogger.Log(string.Format("-- Database : {0}", DatabaseItem.Name.TrimEnd()));
+                  //if (!ParamUserOnly || (ParamUserOnly && !DatabaseItem.IsSystemObject)) {
+                  //  VerboseLogger.Log(string.Format("accessing database {0}", DatabaseItem.Name));
+                  //  switch (ParamDatabaseType) {
+                  //    case EDocumentDatabasesType.Stats:
+                  //      #region stats
+                  //      Console.Write("-- {0,-40}", DatabaseItem.Name.TrimEnd().PadRight(40, '.'));
+                  //      Console.Write(" {0,20}", DatabaseItem.Size.ToString("#,##0.00 MB"));
+                  //      Console.Write(" {0,25}", DatabaseItem.SpaceAvailable.ToString("#,##0.00 MB free"));
+                  //      Console.Write(" (D={0,20})", DatabaseItem.DataSpaceUsage.ToString("#,##0 KB"));
+                  //      Console.Write(" (I={0,20})", DatabaseItem.IndexSpaceUsage.ToString("#,##0 KB"));
+                  //      Console.Write(" {0,4} users", DatabaseItem.Users.Count);
+                  //      DatabaseOptions oDBO;
+                  //      try {
+                  //        oDBO = DatabaseItem.DatabaseOptions;
+                  //        Console.Write(" | {0}", SqlUtils.RecoveryModelText(oDBO.RecoveryModel));
+                  //      } catch {
+                  //        Console.Write(" | only for 2000+");
+                  //      }
+                  //      Console.WriteLine();
+                  //      break;
+                  //    #endregion
+                  //    case EDocumentDatabasesType.Physical:
+                  //      #region physical
+                  //      VerboseLogger.Log(string.Format("-- Database : {0}", DatabaseItem.Name.TrimEnd()));
 
-                        #region Data files
-                        foreach (FileGroup oFG in DatabaseItem.FileGroups) {
-                          foreach (DataFile oDBF in oFG.Files) {
-                            //Console.Write("{0}", oSql.TrueName.PadRight(30, '.'));
-                            Console.Write(" {0}", DatabaseItem.Name.PadRight(30, '.'));
-                            Console.Write(" {0}", oDBF.Name.PadRight(40, '.'));
-                            Console.Write(" {0}", oFG.Name.PadRight(15, '.'));
-                            Console.Write(" {0}", oDBF.FileName.Substring(0, 80).TrimEnd().PadRight(80, '.'));
-                            Console.Write(" ({0,13} [{1,13}])", oDBF.Size.ToString("#0.00 MB"), oDBF.VolumeFreeSpace.ToString("#0.00 MB"));
+                  //      #region Data files
+                  //      foreach (FileGroup oFG in DatabaseItem.FileGroups) {
+                  //        foreach (DataFile oDBF in oFG.Files) {
+                  //          //Console.Write("{0}", oSql.TrueName.PadRight(30, '.'));
+                  //          Console.Write(" {0}", DatabaseItem.Name.PadRight(30, '.'));
+                  //          Console.Write(" {0}", oDBF.Name.PadRight(40, '.'));
+                  //          Console.Write(" {0}", oFG.Name.PadRight(15, '.'));
+                  //          Console.Write(" {0}", oDBF.FileName.Substring(0, 80).TrimEnd().PadRight(80, '.'));
+                  //          Console.Write(" ({0,13} [{1,13}])", oDBF.Size.ToString("#0.00 MB"), oDBF.VolumeFreeSpace.ToString("#0.00 MB"));
 
-                            switch (oDBF.GrowthType) {
-                              case FileGrowthType.KB:
-                                #region Growth MB
-                                if (oDBF.Growth > 0) {
-                                  Console.Write(" + {0,8}", ((int)(oDBF.Growth / 1024)).ToString("#0 MB"));
-                                  if (oDBF.MaxSize > 0) {
-                                    Console.Write(", upto {0,-8}", oDBF.MaxSize.ToString("#0 MB"));
-                                  } else {
-                                    Console.Write(", no limit     ");
-                                  }
-                                } else {
-                                  Console.Write(" + no growth            ");
-                                }
-                                break;
-                              #endregion
-                              case FileGrowthType.Percent:
-                                #region Growth Percent
-                                if (oDBF.Growth > 0) {
-                                  Console.Write(" + {0,5} % ", oDBF.Growth.ToString("#0"));
-                                  if (oDBF.MaxSize > 0) {
-                                    Console.Write(", upto {0,-8}", oDBF.MaxSize.ToString("#0 MB"));
-                                  } else {
-                                    Console.Write(", no limit     ");
-                                  }
-                                } else {
-                                  Console.Write(" + no growth            ");
-                                }
-                                break;
-                              #endregion
-                              default:
-                                Console.Write(" + no growth            ");
-                                break;
+                  //          switch (oDBF.GrowthType) {
+                  //            case FileGrowthType.KB:
+                  //              #region Growth MB
+                  //              if (oDBF.Growth > 0) {
+                  //                Console.Write(" + {0,8}", ((int)(oDBF.Growth / 1024)).ToString("#0 MB"));
+                  //                if (oDBF.MaxSize > 0) {
+                  //                  Console.Write(", upto {0,-8}", oDBF.MaxSize.ToString("#0 MB"));
+                  //                } else {
+                  //                  Console.Write(", no limit     ");
+                  //                }
+                  //              } else {
+                  //                Console.Write(" + no growth            ");
+                  //              }
+                  //              break;
+                  //            #endregion
+                  //            case FileGrowthType.Percent:
+                  //              #region Growth Percent
+                  //              if (oDBF.Growth > 0) {
+                  //                Console.Write(" + {0,5} % ", oDBF.Growth.ToString("#0"));
+                  //                if (oDBF.MaxSize > 0) {
+                  //                  Console.Write(", upto {0,-8}", oDBF.MaxSize.ToString("#0 MB"));
+                  //                } else {
+                  //                  Console.Write(", no limit     ");
+                  //                }
+                  //              } else {
+                  //                Console.Write(" + no growth            ");
+                  //              }
+                  //              break;
+                  //            #endregion
+                  //            default:
+                  //              Console.Write(" + no growth            ");
+                  //              break;
 
-                            }
+                  //          }
 
-                            string oDbDisk = "";
-                            if (oDBF.FileName.Substring(1, 1) == ":") {
-                              oDbDisk = oDBF.FileName.Substring(0, 1);
-                            }
-                            int DiskSpaceFree = GetDiskFreeSpaceSQL(SqlServer, oDbDisk);
-                            Console.Write(" {0,10} MB free", DiskSpaceFree);
+                  //          string oDbDisk = "";
+                  //          if (oDBF.FileName.Substring(1, 1) == ":") {
+                  //            oDbDisk = oDBF.FileName.Substring(0, 1);
+                  //          }
+                  //          int DiskSpaceFree = GetDiskFreeSpaceSQL(SqlServer, oDbDisk);
+                  //          Console.Write(" {0,10} MB free", DiskSpaceFree);
 
-                            Console.WriteLine();
-                          }
-                        }
-                        #endregion
-                        #region Log files
-                        foreach (LogFile oLog in DatabaseItem.LogFiles) {
-                          //Console.Write("{0}", oSql.TrueName.PadRight(30, '.'));
-                          Console.Write(" {0}", DatabaseItem.Name.PadRight(30, '.'));
-                          Console.Write(" {0}", oLog.Name.PadRight(40, '.'));
-                          Console.Write(" {0}", string.Empty.PadRight(15, '.'));
-                          Console.Write(" {0}", oLog.FileName.Substring(0, 80).TrimEnd().PadRight(80, '.'));
-                          //Console.Write(" ({0,13})", ((float)(oLog.SizeInKB/1024.0)).ToString("#0.00 MB"));
-                          Console.Write(" ({0,13} [{1,13}])", oLog.Size.ToString("#0.00 MB"), oLog.VolumeFreeSpace.ToString("#0.00 MB"));
-                          switch (oLog.GrowthType) {
-                            case FileGrowthType.KB:
-                              #region Growth MB
-                              if (oLog.Growth > 0) {
-                                Console.Write(" + {0,8}", ((float)(oLog.Growth / 1024)).ToString("#0 MB"));
-                                if (oLog.MaxSize > 0) {
-                                  Console.Write(", upto {0,-8}", oLog.MaxSize.ToString("#0 MB"));
-                                } else {
-                                  Console.Write(", no limit     ");
-                                }
-                              } else {
-                                Console.Write(" + no growth              ");
-                              }
-                              break;
-                            #endregion
-                            case FileGrowthType.Percent:
-                              #region Growth Percent 
-                              if (oLog.Growth > 0) {
-                                Console.Write(" + {0,5} % ", oLog.Growth.ToString("#0"));
-                                if (oLog.MaxSize > 0) {
-                                  Console.Write(", upto {0,-8}", oLog.MaxSize.ToString("#0 MB"));
-                                } else {
-                                  Console.Write(", no limit     ");
-                                }
-                              } else {
-                                Console.Write(" + no growth              ");
-                              }
-                              break;
-                            #endregion
-                            default:
-                              Console.Write(" + no growth              ");
-                              break;
-                          }
-                          string oDbDisk = "";
-                          if (oLog.FileName.Substring(1, 1) == ":") {
-                            oDbDisk = oLog.FileName.Substring(0, 1);
-                          }
-                          int DiskSpaceFree = GetDiskFreeSpaceSQL(SqlServer, oDbDisk);
-                          Console.Write(" {0,10} MB free", DiskSpaceFree);
+                  //          Console.WriteLine();
+                  //        }
+                  //      }
+                  //      #endregion
+                  //      #region Log files
+                  //      foreach (LogFile oLog in DatabaseItem.LogFiles) {
+                  //        //Console.Write("{0}", oSql.TrueName.PadRight(30, '.'));
+                  //        Console.Write(" {0}", DatabaseItem.Name.PadRight(30, '.'));
+                  //        Console.Write(" {0}", oLog.Name.PadRight(40, '.'));
+                  //        Console.Write(" {0}", string.Empty.PadRight(15, '.'));
+                  //        Console.Write(" {0}", oLog.FileName.Substring(0, 80).TrimEnd().PadRight(80, '.'));
+                  //        //Console.Write(" ({0,13})", ((float)(oLog.SizeInKB/1024.0)).ToString("#0.00 MB"));
+                  //        Console.Write(" ({0,13} [{1,13}])", oLog.Size.ToString("#0.00 MB"), oLog.VolumeFreeSpace.ToString("#0.00 MB"));
+                  //        switch (oLog.GrowthType) {
+                  //          case FileGrowthType.KB:
+                  //            #region Growth MB
+                  //            if (oLog.Growth > 0) {
+                  //              Console.Write(" + {0,8}", ((float)(oLog.Growth / 1024)).ToString("#0 MB"));
+                  //              if (oLog.MaxSize > 0) {
+                  //                Console.Write(", upto {0,-8}", oLog.MaxSize.ToString("#0 MB"));
+                  //              } else {
+                  //                Console.Write(", no limit     ");
+                  //              }
+                  //            } else {
+                  //              Console.Write(" + no growth              ");
+                  //            }
+                  //            break;
+                  //          #endregion
+                  //          case FileGrowthType.Percent:
+                  //            #region Growth Percent 
+                  //            if (oLog.Growth > 0) {
+                  //              Console.Write(" + {0,5} % ", oLog.Growth.ToString("#0"));
+                  //              if (oLog.MaxSize > 0) {
+                  //                Console.Write(", upto {0,-8}", oLog.MaxSize.ToString("#0 MB"));
+                  //              } else {
+                  //                Console.Write(", no limit     ");
+                  //              }
+                  //            } else {
+                  //              Console.Write(" + no growth              ");
+                  //            }
+                  //            break;
+                  //          #endregion
+                  //          default:
+                  //            Console.Write(" + no growth              ");
+                  //            break;
+                  //        }
+                  //        string oDbDisk = "";
+                  //        if (oLog.FileName.Substring(1, 1) == ":") {
+                  //          oDbDisk = oLog.FileName.Substring(0, 1);
+                  //        }
+                  //        int DiskSpaceFree = GetDiskFreeSpaceSQL(SqlServer, oDbDisk);
+                  //        Console.Write(" {0,10} MB free", DiskSpaceFree);
 
-                          Console.WriteLine();
-                        }
-                        #endregion
-                        Console.WriteLine();
-                        break;
-                      #endregion
-                      case "list":
-                      case "":
-                      default:
-                        #region list
-                        Console.Write("-- Database : {0}", DatabaseItem.Name.PadRight(50, '.'));
-                        Console.Write(" {0}", SqlUtils.DbStatusText(DatabaseItem.Status));
-                        Console.WriteLine();
-                        break;
-                        #endregion
-                    }
-                  }
+                  //        Console.WriteLine();
+                  //      }
+                  //      #endregion
+                  //      Console.WriteLine();
+                  //      break;
+                  //    #endregion
+                  //    case EDocumentDatabasesType.Full:
+                  //    case EDocumentDatabasesType.List:
+                  //    default:
+                  //      #region list
+                  //      Console.Write("-- Database : {0}", DatabaseItem.Name.PadRight(50, '.'));
+                  //      Console.Write(" {0}", SqlUtils.DbStatusText(DatabaseItem.Status));
+                  //      Console.WriteLine();
+                  //      break;
+                  //      #endregion
+                  //  }
+                  //}
                   #endregion
 
                   #region Database users
@@ -529,7 +539,11 @@ namespace listdb {
 
                 //#region Tables
                 if (WithTables) {
-                  Documenter.DocumentTables(DatabaseItem, ParamTablesType);
+                  TSelectionCriterias TableCriterias = new TSelectionCriterias();
+                  TableCriterias.Filter.AddRange(ParamTableList);
+                  TableCriterias.SelectUserData = ParamUserOnly;
+                  TableCriterias.SelectSystemData = !ParamUserOnly;
+                  Documenter.DocumentTables(DatabaseItem, ParamTablesType, TableCriterias);
                 }
 
                 /**

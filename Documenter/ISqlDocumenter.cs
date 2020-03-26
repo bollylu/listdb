@@ -11,8 +11,8 @@ namespace listdb {
 
     void DocumentUsers(EDocumentUsersType usersType);
 
-    void DocumentTables(Database database, EDocumentTablesType tablesType, bool userOnly = false);
-    void DocumentTables(Database database, EDocumentTablesType tablesType, IEnumerable<string> tableFilter, bool userOnly = false);
+    void DocumentDatabases(EDocumentDatabasesType databasesType, ISelectionCriterias criterias);
+    void DocumentTables(Database database, EDocumentTablesType tablesType, ISelectionCriterias criterias);
 
   }
 }

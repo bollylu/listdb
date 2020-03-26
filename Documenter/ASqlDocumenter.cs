@@ -21,6 +21,13 @@ namespace listdb {
       List
     }
 
+    public enum EDocumentDatabasesType {
+      Full,
+      List,
+      Stats,
+      Physical
+    }
+
     public enum EDocumentTablesType {
       Full,
       List,
@@ -29,8 +36,9 @@ namespace listdb {
 
     public abstract void DocumentConfig(EDocumentConfigType configType);
     public abstract void DocumentUsers(EDocumentUsersType usersType);
-    public abstract void DocumentTables(Database database, EDocumentTablesType tablesType, bool userOnly = false);
-    public abstract void DocumentTables(Database database, EDocumentTablesType tablesType, IEnumerable<string> tableFilter, bool userOnly = false);
+
+    public abstract void DocumentDatabases(EDocumentDatabasesType databasesType, ISelectionCriterias criterias);
+    public abstract void DocumentTables(Database database, EDocumentTablesType tablesType, ISelectionCriterias criterias);
 
     protected string MakeSectionTitle(string title) {
       return TextBox.BuildHorizontalRowWithText($" {title} ", 120, TextBox.EHorizontalRowType.Single);

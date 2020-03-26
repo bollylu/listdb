@@ -2,7 +2,7 @@
   "profiles": {
     "listdb": {
       "commandName": "Project",
-      "commandLineArgs": "/server=lucwks7 /verbose /tables=list"
+      "commandLineArgs": "/server=lucwks7 /verbose /databases=physical /system"
     }
   }
 }

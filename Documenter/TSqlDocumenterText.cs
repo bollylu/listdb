@@ -13,6 +13,7 @@ namespace listdb {
       _SqlServer = sqlServer;
     }
 
+    #region --- Server configuration --------------------------------------------
     public override void DocumentConfig(EDocumentConfigType configType) {
 
       StringBuilder RetVal = new StringBuilder();
@@ -42,8 +43,6 @@ namespace listdb {
           break;
 
         #endregion --- Full config --------------------------------------------
-
-
 
         default:
         case EDocumentConfigType.List:
@@ -113,12 +112,203 @@ namespace listdb {
       RetVal.AppendLine(MakeSectionFooter($"{UserCount} user(s) listed"));
       Output?.Invoke(RetVal.ToString());
     }
+    #endregion --- Server configuration --------------------------------------------
 
-    public override void DocumentTables(Database database, EDocumentTablesType tablesType, bool userOnly = false) {
-      DocumentTables(database, tablesType, new string[0], userOnly);
+    public override void DocumentDatabases(EDocumentDatabasesType databasesType, ISelectionCriterias criterias) {
+      StringBuilder RetVal = new StringBuilder();
+
+      RetVal.AppendLine(MakeSectionTitle($"Server : {_SqlServer.Name} - Databases list"));
+
+      const string COL_DBNAME = "Db name";
+      const int COL_DBNAME_WIDTH = 30;
+      const string COL_LOGICAL_FILENAME = "Logical name";
+      const int COL_LOGICAL_FILENAME_WIDTH = 40;
+      const string COL_GROUP_NAME = "Group";
+      const int COL_GROUP_NAME_WIDTH = 20;
+      const string COL_PHYSICAL_FILENAME = "Physical name";
+      const int COL_PHYSICAL_FILENAME_WIDTH = 120;
+      const string COL_CURRENT_SIZE = "Current size";
+      const int COL_CURRENT_SIZE_WIDTH = 15;
+      const string COL_FREE_SPACE = "Free space";
+      const int COL_FREE_SPACE_WIDTH = 15;
+      const string COL_GROWTH = "Growth parameters";
+
+      RetVal.Append(COL_DBNAME.AlignedCenter(COL_DBNAME_WIDTH));
+      RetVal.Append(COL_LOGICAL_FILENAME.AlignedCenter(COL_LOGICAL_FILENAME_WIDTH));
+      RetVal.Append(COL_GROUP_NAME.AlignedCenter(COL_GROUP_NAME_WIDTH));
+      RetVal.Append(COL_PHYSICAL_FILENAME.AlignedCenter(COL_PHYSICAL_FILENAME_WIDTH));
+      RetVal.Append(COL_CURRENT_SIZE.AlignedCenter(COL_CURRENT_SIZE_WIDTH));
+      RetVal.Append(COL_FREE_SPACE.AlignedCenter(COL_FREE_SPACE_WIDTH));
+      RetVal.Append(COL_GROWTH);
+      RetVal.AppendLine();
+
+      foreach (Database DatabaseItem in _SqlServer.Databases) {
+
+        if ((criterias.SelectUserData && !DatabaseItem.IsSystemObject) || (criterias.SelectSystemData && DatabaseItem.IsSystemObject)) {
+          Log(string.Format("accessing database {0}", DatabaseItem.Name));
+
+          switch (databasesType) {
+            case EDocumentDatabasesType.Stats:
+              #region stats
+              RetVal.Append($"-- {DatabaseItem.Name.TrimEnd().AlignedLeft(40, '.')}");
+              RetVal.Append($"{DatabaseItem.Size.ToString("#,##0.00 MB").AlignedRight(20, '.')}");
+              RetVal.Append($" {DatabaseItem.SpaceAvailable.ToString("#,##0.00 MB free").AlignedRight(25, '.')}");
+              RetVal.Append($" (D={DatabaseItem.DataSpaceUsage.ToString("#,##0 KB").AlignedRight(15, '.')})");
+              RetVal.Append($" (I={DatabaseItem.IndexSpaceUsage.ToString("#,##0 KB").AlignedRight(20, '.')})");
+              RetVal.Append($" {DatabaseItem.Users.Count} users".AlignedLeft(10, '.'));
+
+              DatabaseOptions oDBO;
+              try {
+                oDBO = DatabaseItem.DatabaseOptions;
+                RetVal.Append($" | {SqlUtils.RecoveryModelText(oDBO.RecoveryModel)}");
+              } catch {
+                RetVal.Append(" | only for 2000+");
+              }
+              RetVal.AppendLine();
+              break;
+            #endregion
+
+            case EDocumentDatabasesType.Physical:
+              #region physical
+
+
+
+              #region Data files
+              foreach (FileGroup FileGroupItem in DatabaseItem.FileGroups) {
+                foreach (DataFile DataFileItem in FileGroupItem.Files) {
+                  RetVal.Append($"{DatabaseItem.Name.AlignedLeft(COL_DBNAME_WIDTH, '.')}");
+                  RetVal.Append($"{DataFileItem.Name.AlignedLeft(COL_LOGICAL_FILENAME_WIDTH, '.')}");
+                  RetVal.Append($"{FileGroupItem.Name.AlignedLeft(COL_GROUP_NAME_WIDTH, '.')}");
+                  RetVal.Append($"{DataFileItem.FileName.AlignedLeft(COL_PHYSICAL_FILENAME_WIDTH, '.')}");
+                  RetVal.Append($"({((float)(DataFileItem.Size / 1024.0)).ToString("#0.00 MB").AlignedRight(COL_CURRENT_SIZE_WIDTH, '.')})");
+                  RetVal.Append($"[{DataFileItem.VolumeFreeSpace.ToString("#0.00 MB").AlignedRight(COL_FREE_SPACE_WIDTH, '.')}])");
+
+                  switch (DataFileItem.GrowthType) {
+                    case FileGrowthType.KB:
+                      #region Growth MB
+                      if (DataFileItem.Growth > 0) {
+                        RetVal.Append($" + {((int)(DataFileItem.Growth / 1024)).ToString("#0 MB")}");
+                        if (DataFileItem.MaxSize > 0) {
+                          RetVal.Append($", upto {DataFileItem.MaxSize.ToString("#0 MB")}");
+                        } else {
+                          RetVal.Append(", no limit");
+                        }
+                      } else {
+                        RetVal.Append(" + no growth");
+                      }
+                      break;
+                    #endregion
+                    case FileGrowthType.Percent:
+                      #region Growth Percent
+                      if (DataFileItem.Growth > 0) {
+                        RetVal.Append($" + {DataFileItem.Growth.ToString("#0")} % ");
+                        if (DataFileItem.MaxSize > 0) {
+                          RetVal.Append($", upto {DataFileItem.MaxSize.ToString("#0 MB")}");
+                        } else {
+                          RetVal.Append(", no limit");
+                        }
+                      } else {
+                        RetVal.Append(" + no growth");
+                      }
+                      break;
+                    #endregion
+                    default:
+                      RetVal.Append(" + no growth");
+                      break;
+
+                  }
+
+                  //string oDbDisk = "";
+                  //if (oDBF.FileName.Substring(1, 1) == ":") {
+                  //  oDbDisk = oDBF.FileName.Substring(0, 1);
+                  //}
+                  //int DiskSpaceFree = GetDiskFreeSpaceSQL(SqlServer, oDbDisk);
+                  //Console.Write(" {0,10} MB free", DiskSpaceFree);
+
+                  RetVal.AppendLine();
+                }
+              }
+              #endregion
+
+              #region Log files
+              foreach (LogFile LogFileItem in DatabaseItem.LogFiles) {
+                RetVal.Append($"{DatabaseItem.Name.AlignedLeft(COL_DBNAME_WIDTH, '.')}");
+                RetVal.Append($"{LogFileItem.Name.AlignedLeft(COL_LOGICAL_FILENAME_WIDTH, '.')}");
+                RetVal.Append($"{string.Empty.PadRight(COL_GROUP_NAME_WIDTH, '.')}");
+                RetVal.Append($"{LogFileItem.FileName.AlignedLeft(COL_PHYSICAL_FILENAME_WIDTH, '.')}");
+                RetVal.Append($"({((float)(LogFileItem.Size / 1024.0)).ToString("#0.00 MB").AlignedRight(COL_CURRENT_SIZE_WIDTH, '.')})");
+                RetVal.Append($"[{LogFileItem.VolumeFreeSpace.ToString("#0.00 MB").AlignedRight(COL_FREE_SPACE_WIDTH, '.')}] )");
+
+                switch (LogFileItem.GrowthType) {
+                  case FileGrowthType.KB:
+                    #region Growth MB
+                    if (LogFileItem.Growth > 0) {
+                      RetVal.Append($" + {((float)(LogFileItem.Growth / 1024)).ToString("#0 MB")}");
+                      if (LogFileItem.MaxSize > 0) {
+                        RetVal.Append($", upto {LogFileItem.MaxSize.ToString("#0 MB")}");
+                      } else {
+                        RetVal.Append(", no limit");
+                      }
+                    } else {
+                      RetVal.Append(" + no growth");
+                    }
+                    break;
+                  #endregion
+                  case FileGrowthType.Percent:
+                    #region Growth Percent 
+                    if (LogFileItem.Growth > 0) {
+                      RetVal.Append($" + {LogFileItem.Growth.ToString("#0")} % ");
+                      if (LogFileItem.MaxSize > 0) {
+                        RetVal.Append($", upto {LogFileItem.MaxSize.ToString("#0 MB")}");
+                      } else {
+                        RetVal.Append(", no limit");
+                      }
+                    } else {
+                      RetVal.Append(" + no growth");
+                    }
+                    break;
+                  #endregion
+                  default:
+                    RetVal.Append(" + no growth");
+                    break;
+                }
+                //string oDbDisk = "";
+                //if (LogFileItem.FileName.Substring(1, 1) == ":") {
+                //  oDbDisk = LogFileItem.FileName.Substring(0, 1);
+                //}
+                //int DiskSpaceFree = GetDiskFreeSpaceSQL(SqlServer, oDbDisk);
+                //Console.Write(" {0,10} MB free", DiskSpaceFree);
+
+                RetVal.AppendLine();
+              }
+              #endregion
+              break;
+            #endregion
+            case EDocumentDatabasesType.Full:
+            case EDocumentDatabasesType.List:
+            default:
+              #region list
+              Console.Write("-- Database : {0}", DatabaseItem.Name.PadRight(50, '.'));
+              Console.Write(" {0}", SqlUtils.DbStatusText(DatabaseItem.Status));
+              Console.WriteLine();
+              break;
+              #endregion
+          }
+        }
+
+      }
+
+
+
+
+
+      Output?.Invoke(RetVal.ToString());
     }
 
-    public override void DocumentTables(Database database, EDocumentTablesType tablesType, IEnumerable<string> tableFilter, bool userOnly = false) {
+
+    #region --- Database tables --------------------------------------------
+
+    public override void DocumentTables(Database database, EDocumentTablesType tablesType, ISelectionCriterias criterias) {
 
       StringBuilder RetVal = new StringBuilder();
 
@@ -126,9 +316,9 @@ namespace listdb {
 
       foreach (Table TableItem in database.Tables) {
 
-        if (tableFilter.IsEmpty() || tableFilter.Contains(TableItem.Name, StringComparer.InvariantCultureIgnoreCase)) {
+        if (criterias.Filter.IsEmpty() || criterias.Filter.Contains(TableItem.Name, StringComparer.InvariantCultureIgnoreCase)) {
 
-          if (!userOnly || (userOnly && !database.IsSystemObject && !TableItem.IsSystemObject)) {
+          if ((criterias.SelectUserData && !database.IsSystemObject && !TableItem.IsSystemObject) || (criterias.SelectSystemData && database.IsSystemObject && TableItem.IsSystemObject)) {
 
             Scripter TableScripter = new Scripter(_SqlServer);
             TableScripter.Options.ScriptDrops = false;
@@ -146,7 +336,7 @@ namespace listdb {
                 RetVal.AppendLine(strUnderline);
                 RetVal.AppendLine(strTableName);
                 RetVal.AppendLine(strUnderline);
-                foreach(string LineItem in TableScripter.Script(new SqlSmoObject[] { TableItem })) {
+                foreach (string LineItem in TableScripter.Script(new SqlSmoObject[] { TableItem })) {
                   RetVal.AppendLine(LineItem);
                 }
                 RetVal.AppendLine("-- > ===[EOT]===");
@@ -309,5 +499,6 @@ namespace listdb {
 
       Output?.Invoke(RetVal.ToString());
     }
+    #endregion --- Database tables --------------------------------------------
   }
 }
