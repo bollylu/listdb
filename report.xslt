@@ -17,7 +17,7 @@
           <xsl:for-each select="/root/server">
             <tr>
               <td colspan="5" bgcolor="yellow">
-                <xsl:attribute select="server" />
+                <xsl:value-of select="server" />
               </td>
             </tr>
             <xsl:for-each select="/root/server/jobs/job">
